@@ -10,10 +10,16 @@ import VideoListItem from './video_list_item';
 
 const VideoList = props => {
   /** Builds a "VideoListItem" for each video retrieved from the search. */
+  const onVideoSelect = props.onVideoSelect;
   const videos        = props.videos;
   const listOfVideos  = videos.map(video => {
     const key       = video.etag;
-    const template  = <VideoListItem key={key} video={video} />;
+    const template  = (
+      <VideoListItem
+        key={key}
+        video={video}
+        onVideoSelect={onVideoSelect} />
+    );
     return template;
   });
 

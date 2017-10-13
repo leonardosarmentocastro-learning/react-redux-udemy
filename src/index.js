@@ -8,8 +8,9 @@ import YTSearch from 'youtube-api-search';
 /**
  * Project packages.
  */
-import SearchBar from './components/search_bar';
-import VideoList from './components/video_list';
+import SearchBar    from './components/search_bar';
+import VideoDetail  from './components/video_detail';
+import VideoList    from './components/video_list';
 
 const youtube   = {api: {key: null}};
 youtube.api.key = 'AIzaSyCdCCH3TdLJhqPynnfogXe4bpVo4SSRII4';
@@ -22,15 +23,23 @@ class App extends Component {
     super(props);
 
     /** Set component's state. */
-    this.state = {videos: []};
+    this.state = {
+      selectedVideo: null,
+      videos: []
+    };
 
-    /** TODO */
+    /** Public methods. */
+    this.onVideoSelect = this.onVideoSelect.bind(this);
+
+    /** Retrieving video data. */
     const options = {key: null, term: null};
     options.key   = youtube.api.key;
     options.term  = 'My hero academia';
 
     YTSearch(options, videos => {
-      const state = {videos};
+      const selectedVideo = videos[0];
+      const state         = {selectedVideo, videos};
+
       this.setState(state);
     });
   }
@@ -39,11 +48,19 @@ class App extends Component {
     const template = (
       <div>
         <SearchBar />
-        <VideoList videos={this.state.videos} />
+        <VideoDetail video={this.state.selectedVideo} />
+        <VideoList
+          onVideoSelect={this.onVideoSelect}
+          videos={this.state.videos} />
       </div>
     );
 
     return template;
+  }
+
+  onVideoSelect(selectedVideo) {
+    const state = {selectedVideo};
+    this.setState(state);
   }
 }
 
