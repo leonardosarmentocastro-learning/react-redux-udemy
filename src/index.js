@@ -1,14 +1,15 @@
 /**
  * NPM packages.
  */
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import YTSearch from 'youtube-api-search';
 
 /**
  * Project packages.
  */
 import SearchBar from './components/search_bar';
-
+import VideoList from './components/video_list';
 
 const youtube   = {api: {key: null}};
 youtube.api.key = 'AIzaSyCdCCH3TdLJhqPynnfogXe4bpVo4SSRII4';
@@ -16,14 +17,34 @@ youtube.api.key = 'AIzaSyCdCCH3TdLJhqPynnfogXe4bpVo4SSRII4';
 /**
  * Create a new component. This should produce some HTML.
  */
-const App = () => {
-  const template = (
-    <div>
-      <SearchBar />
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
 
-  return template;
+    /** Set component's state. */
+    this.state = {videos: []};
+
+    /** TODO */
+    const options = {key: null, term: null};
+    options.key   = youtube.api.key;
+    options.term  = 'My hero academia';
+
+    YTSearch(options, videos => {
+      const state = {videos};
+      this.setState(state);
+    });
+  }
+
+  render() {
+    const template = (
+      <div>
+        <SearchBar />
+        <VideoList videos={this.state.videos} />
+      </div>
+    );
+
+    return template;
+  }
 }
 
 /**
