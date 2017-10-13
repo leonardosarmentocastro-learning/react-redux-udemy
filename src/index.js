@@ -1,11 +1,29 @@
+/**
+ * NPM packages.
+ */
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+/**
+ * Project packages.
+ */
+import SearchBar from './components/search_bar';
+
+
+const youtube   = {api: {key: null}};
+youtube.api.key = 'AIzaSyCdCCH3TdLJhqPynnfogXe4bpVo4SSRII4';
 
 /**
  * Create a new component. This should produce some HTML.
  */
 const App = () => {
-  return <div>Hi!</div>
+  const template = (
+    <div>
+      <SearchBar />
+    </div>
+  );
+
+  return template;
 }
 
 /**
