@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import YTSearch from 'youtube-api-search';
+import _        from 'lodash';
 
 /**
  * Project packages.
@@ -29,25 +30,24 @@ class App extends Component {
     };
 
     /** Public methods. */
-    this.onVideoSelect = this.onVideoSelect.bind(this);
+    this.onSearchTermChange = this.onSearchTermChange.bind(this);
+    this.onVideoSelect      = this.onVideoSelect.bind(this);
 
     /** Retrieving video data. */
-    const options = {key: null, term: null};
-    options.key   = youtube.api.key;
-    options.term  = 'My hero academia';
-
-    YTSearch(options, videos => {
-      const selectedVideo = videos[0];
-      const state         = {selectedVideo, videos};
-
-      this.setState(state);
-    });
+    const term = 'My hero academia';
+    this.videoSearch(term);
   }
 
   render() {
+    /** Debounce the "onSearchTermChange" callback. */
+    const fn                  = term => this.videoSearch(term);
+    const wait                = 500;
+    const onSearchTermChange  =  _.debounce(fn, wait);
+
+    /** Template rendering. */
     const template = (
       <div>
-        <SearchBar />
+        <SearchBar onSearchTermChange={onSearchTermChange}/>
         <VideoDetail video={this.state.selectedVideo} />
         <VideoList
           onVideoSelect={this.onVideoSelect}
@@ -58,9 +58,26 @@ class App extends Component {
     return template;
   }
 
+  onSearchTermChange(term) {
+    this.videoSearch(term);
+  }
+
   onVideoSelect(selectedVideo) {
     const state = {selectedVideo};
     this.setState(state);
+  }
+
+  videoSearch(term) {
+    const options = {key: null, term: null};
+    options.key   = youtube.api.key;
+    options.term  = term;
+
+    YTSearch(options, videos => {
+      const selectedVideo = videos[0];
+      const state         = {selectedVideo, videos};
+
+      this.setState(state);
+    });
   }
 }
 
